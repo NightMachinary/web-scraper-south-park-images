@@ -1,3 +1,5 @@
+- https://medium.com/@maria.alex.ilie/creating-new-south-park-characters-with-machine-learning-d6f24baaf82f
+
 # South Park Image Scraper
 
 *Scrapes all the images of South Park characters and downloads them to a local folder*

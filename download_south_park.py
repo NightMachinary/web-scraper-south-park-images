@@ -1,17 +1,25 @@
+from brish import *
+import os
 import re
 import requests
 from bs4 import BeautifulSoup
 import urllib.request
+from IPython import embed
 
 BASE_CHAR_PAGE = 'https://southpark.fandom.com/wiki/Portal:Characters'
-BASE_DOWNLOAD_PATH = 'data/southpark/{number}.{imgformat}'
+BASE_DOWNLOAD_DIR = '/Volumes/hyper-diva/archives/image datasets/South Park'
+z('mkdir -p {BASE_DOWNLOAD_DIR}').assert_zero
+BASE_DOWNLOAD_PATH = BASE_DOWNLOAD_DIR + '/{number}_{name}.{imgformat}'
 
 def download_image(url, current_index, format):
     try:
-        download_path = BASE_DOWNLOAD_PATH.format(number=current_index,imgformat=format)
+        name = z('ec "${{$(url-tail {url}):r}}"').assert_zero.outrs
+        download_path = BASE_DOWNLOAD_PATH.format(number=current_index,
+                                                  name=name,
+                                                  imgformat=format)
         urllib.request.urlretrieve(url, download_path)
     except Exception as e:
-        print("couldn't download image " + url)
+        print("Couldn't download image " + url)
         print(e)
 
 def get_all_image_urls():
@@ -21,7 +29,7 @@ def get_all_image_urls():
     img_tags = soup.find_all('img')
     urls = [img['src'] for img in img_tags]
     for url in urls:
-        if "https://vignette.wikia.nocookie.net/southpark/images/" in url and "revision" in url:
+        if "https://static.wikia.nocookie.net/southpark/images/" in url and "revision" in url:
             short_url = url.split("/revision")[0]
             all_urls.append(short_url)
     return all_urls
